@@ -1,10 +1,11 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Newznab.Web
+namespace Newznab
 {
 	public class NewznabWebRequestExecutor
 	{
@@ -20,9 +21,9 @@ namespace Newznab.Web
 			foreach (var queryParameter in request)
 			{
 				uriBuilder.Append("&");
-				uriBuilder.Append(queryParameter.Key);
+				uriBuilder.Append(WebUtility.UrlEncode(queryParameter.Key));
 				uriBuilder.Append("=");
-				uriBuilder.Append(queryParameter.Value);
+				uriBuilder.Append(WebUtility.UrlEncode(queryParameter.Value));
 			}
 
 			using (var client = new HttpClient())
