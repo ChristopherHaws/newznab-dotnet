@@ -37,7 +37,7 @@ namespace Newznab.Models
 		}
 
 		[XmlIgnore]
-		public String[] SupportedParameters { get; set; } = Array.Empty<String>();
+		public String[] SupportedParameters { get; set; } = new String[0];
 
 		[XmlAttribute("supportedParams")]
 		[EditorBrowsable(EditorBrowsableState.Never)]

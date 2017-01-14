@@ -1,13 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <Authors>Christopher Haws</Authors>
+    <Description>Newznab Client for .NET</Description>
+    <ProjectUrl>https://github.com/ChristopherHaws/newznab-dotnet</ProjectUrl>
+    <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/ChristopherHaws/newznab-dotnet.git</RepositoryUrl>
+    <LicenseUrl>https://github.com/ChristopherHaws/newznab-dotnet/blob/master/LICENSE</LicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>newznab nzb indexer usenet</PackageTags>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputType>library</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NETStandard.Library" Version="1.6" />
+    <PackageReference Include="NETStandard.Library" Version="1.6.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.0" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
   </ItemGroup>
