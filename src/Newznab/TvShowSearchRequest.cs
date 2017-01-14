@@ -2,45 +2,52 @@ using System;
 
 namespace Newznab
 {
+	/// <summary>
+	/// Represents a request to search the index in the TV category for items matching the search criteria. 
+	/// </summary>
+	/// <seealso cref="Newznab.SearchRequest" />
 	public class TvShowSearchRequest : SearchRequest
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TvShowSearchRequest"/> class.
+		/// </summary>
 		public TvShowSearchRequest()
 			: base("tvsearch")
 		{
 		}
 
 		/// <summary>
-		/// Season string, e.g S13 or 13 for the item being queried.
+		/// Gets or sets the season number, e.g 13 for season 13.
 		/// </summary>
-		public String Season
+		public Int32 Season
 		{
 			get
 			{
-				return this["season"];
+				return Convert.ToInt32(this["season"].TrimStart('S'));
 			}
 			set
 			{
-				this["season"] = value;
+				this["season"] = $"S{value}";
 			}
 		}
 
 		/// <summary>
-		/// Episode string, e.g E13 or 13 for the item being queried.
+		/// Gets or sets the episode number, e.g 13 for episode 13.
 		/// </summary>
-		public String Episode
+		public Int32 Episode
 		{
 			get
 			{
-				return this["ep"];
+				return Convert.ToInt32(this["ep"].TrimStart('S'));
 			}
 			set
 			{
-				this["ep"] = value;
+				this["ep"] = $"S{value}";
 			}
 		}
 
 		/// <summary>
-		/// TVRage id of the item being queried.
+		/// Gets or sets the TVRage id of the item being queried.
 		/// </summary>
 		public String TvRageId
 		{

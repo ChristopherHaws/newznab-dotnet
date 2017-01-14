@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Newznab.Models;
 using Newznab.Rss;
-using Newznab.Web;
 
 namespace Newznab
 {
@@ -12,6 +11,8 @@ namespace Newznab
 	    private readonly String apiKey;
 	    private readonly NewznabWebRequestExecutor requestExecutor;
 
+	    private Capabilities capabilities;
+
 		public NewznabClient(String uri, String apiKey)
 	    {
 		    this.uri = uri;
@@ -19,16 +20,53 @@ namespace Newznab
 		    this.requestExecutor = new NewznabWebRequestExecutor();
 		}
 		
-		public async Task<Capabilities> GetCapabilitiesAsync()
+		public async Task<Capabilities> GetCapabilitiesAsync(Boolean forceRefresh = false)
 		{
+			if (this.capabilities != null && !forceRefresh)
+			{
+				return this.capabilities;
+			}
+
 			var request = new CapabilitiesRequest();
-			
-		    return await this.requestExecutor.ExecuteAsync<Capabilities>(this.uri, this.apiKey, request);
+
+			this.capabilities = await this.requestExecutor.ExecuteAsync<Capabilities>(this.uri, this.apiKey, request);
+
+			return this.capabilities;
 		}
 
-		public async Task<RssResult<SearchResult>> SearchAsync(TvShowSearchRequest request)
+		public async Task<RssChannel<SearchResult>> SearchAsync(SearchRequest request)
 		{
-			return await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+
+			return result.Channel;
+		}
+
+		public async Task<RssChannel<SearchResult>> SearchAsync(TvShowSearchRequest request)
+		{
+			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+
+			return result.Channel;
+		}
+
+		public async Task<RssChannel<SearchResult>> SearchAsync(MovieSearchRequest request)
+		{
+			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+
+			return result.Channel;
+		}
+
+		public async Task<RssChannel<SearchResult>> SearchAsync(MusicSearchRequest request)
+		{
+			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+
+			return result.Channel;
+		}
+
+		public async Task<RssChannel<SearchResult>> SearchAsync(BookSearchRequest request)
+		{
+			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+
+			return result.Channel;
 		}
 	}
 }

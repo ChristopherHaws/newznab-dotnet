@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Newznab
 {
-	public class NewznabWebRequest : Dictionary<String, String>
+	public abstract class NewznabWebRequest : Dictionary<String, String>
 	{
-		public NewznabWebRequest(String command)
+		protected NewznabWebRequest(String command)
 		{
 			this.Add("t", command);
 		}
