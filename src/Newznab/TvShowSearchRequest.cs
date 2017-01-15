@@ -27,7 +27,7 @@ namespace Newznab
 			}
 			set
 			{
-				this["season"] = $"S{value}";
+				this["season"] = $"S{value.ToString().PadLeft(2, '0')}";
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace Newznab
 			}
 			set
 			{
-				this["ep"] = $"S{value}";
+				this["ep"] = $"E{value.ToString().PadLeft(2, '0')}";
 			}
 		}
 
