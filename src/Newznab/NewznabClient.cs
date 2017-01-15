@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Newznab.Models;
-using Newznab.Rss;
 
 namespace Newznab
 {
-    public class NewznabClient
+    public class NewznabClient : INewznabClient
     {
 	    private readonly String uri;
 	    private readonly String apiKey;
-	    private readonly NewznabWebRequestExecutor requestExecutor;
 
 	    private Capabilities capabilities;
 
@@ -17,7 +19,6 @@ namespace Newznab
 	    {
 		    this.uri = uri;
 		    this.apiKey = apiKey;
-		    this.requestExecutor = new NewznabWebRequestExecutor();
 		}
 		
 		public async Task<Capabilities> GetCapabilitiesAsync(Boolean forceRefresh = false)
@@ -29,44 +30,33 @@ namespace Newznab
 
 			var request = new CapabilitiesRequest();
 
-			this.capabilities = await this.requestExecutor.ExecuteAsync<Capabilities>(this.uri, this.apiKey, request);
+			this.capabilities = await this.ExecuteAsync<Capabilities>(request);
 
 			return this.capabilities;
 		}
 
-		public async Task<RssChannel<SearchResult>> SearchAsync(SearchRequest request)
+		public async Task<T> ExecuteAsync<T>(NewznabWebRequest request)
 		{
-			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+			var serializer = new XmlSerializer(typeof(T));
 
-			return result.Channel;
-		}
+			var uriBuilder = new StringBuilder();
+			uriBuilder.Append(this.uri);
+			uriBuilder.Append("/api?apikey=");
+			uriBuilder.Append(this.apiKey);
 
-		public async Task<RssChannel<SearchResult>> SearchAsync(TvShowSearchRequest request)
-		{
-			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
+			foreach (var queryParameter in request)
+			{
+				uriBuilder.Append("&");
+				uriBuilder.Append(WebUtility.UrlEncode(queryParameter.Key));
+				uriBuilder.Append("=");
+				uriBuilder.Append(WebUtility.UrlEncode(queryParameter.Value));
+			}
 
-			return result.Channel;
-		}
-
-		public async Task<RssChannel<SearchResult>> SearchAsync(MovieSearchRequest request)
-		{
-			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
-
-			return result.Channel;
-		}
-
-		public async Task<RssChannel<SearchResult>> SearchAsync(MusicSearchRequest request)
-		{
-			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
-
-			return result.Channel;
-		}
-
-		public async Task<RssChannel<SearchResult>> SearchAsync(BookSearchRequest request)
-		{
-			var result = await this.requestExecutor.ExecuteAsync<RssResult<SearchResult>>(this.uri, this.apiKey, request);
-
-			return result.Channel;
+			using (var client = new HttpClient())
+			using (var stream = await client.GetStreamAsync(uriBuilder.ToString()))
+			{
+				return (T)serializer.Deserialize(stream);
+			}
 		}
 	}
 }
